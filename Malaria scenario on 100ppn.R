@@ -1,22 +1,26 @@
+
+# collaboration during malaria modelling:
+
+# loading packages
 library(tidyverse)
 library(deSolve)
 
-### Define the model equations ###
+### Define the model equations 
 vector_human <- function(t, x, parms) {
   with(as.list(c(parms, x)), {
-    
+
     # Total Populations
     M <- Sm + Im
     H <- S + I
-    
+
     # Vector Equations
     dSm <- mu * M - beta * I / H * Sm - mu * Sm
     dIm <- beta * I / H * Sm - mu * Im
-    
+
     # Human Equations
     dS <- -alpha * Im / H * S + gamma * I
     dI <- alpha * Im / H * S - gamma * I
-    
+
     output <- c(dSm, dIm, dS, dI)
     list(output)
   })
@@ -55,8 +59,8 @@ vmplot <- as_tibble(as.data.frame(Vector_model)) %>%
 
 vmplot %>%
   group_by(variable) %>%
-  ggplot(aes(x = time, y = value, colour = variable)) +  
-  geom_line() +  
+  ggplot(aes(x = time, y = value, colour = variable)) +
+  geom_line() +
   theme_minimal() +
   labs(title = "Vector Human Compartments", y = "Population", colour = "Species") +
   facet_wrap(~variable)
@@ -65,24 +69,24 @@ vmplot %>%
 ### Definition of equations
 vector_human_seas <- function(t, x, parms) {
   with(as.list(c(parms, x)), {
-    
+
     # Total Population
     M = Sm + Im
     H = S + I
-    
+
     # Adding seasonality
-    seas <- 1 + amp * cos(2 * pi * (t / 365 - phi))  # 
-    
+    seas <- 1 + amp * cos(2 * pi * (t / 365 - phi))  #
+
     # Vector Equations
     dSm <- mu * M - seas * beta * I / H * Sm - mu * Sm
-    dIm <- seas * beta * I / H * Sm - mu * Im   
-    
+    dIm <- seas * beta * I / H * Sm - mu * Im
+
     # Human equations
     dS <- -seas * alpha * Im / H * S + gamma * I
     dI <- seas * alpha * Im / H * S - gamma * I
-    
+
     output <- c(dSm, dIm, dS, dI)
-    list(output)    
+    list(output)
   })
 }
 
@@ -121,8 +125,8 @@ vmplot <- as_tibble(as.data.frame(Vector_model_seas)) %>%
 
 vmplot %>%
   group_by(variable) %>%
-  ggplot(aes(x = time, y = value, colour = variable)) +  
-  geom_line() +  
+  ggplot(aes(x = time, y = value, colour = variable)) +
+  geom_line() +
   theme_minimal() +
   labs(title = "Vector Human Compartments with Seasonality", y = "Population", colour = "Species") +
   facet_wrap(~variable)
