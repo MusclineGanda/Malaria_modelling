@@ -86,7 +86,7 @@ vector_human_seas <- function(t, x, parms) {
   })
 }
 
-# Initialization
+# Initialization:Initial conditions
 start <- c(
   Sm = 1970,
   Im = 30,
